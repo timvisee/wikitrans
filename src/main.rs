@@ -75,7 +75,7 @@ fn wikitrans(
     // Select the search language
     let search_lang = select_lang(&langs, matches.value_of("language"), "Search language: ")?;
     let original_lang = client.language.clone();
-    client.language = search_lang.into();
+    client.language = search_lang.clone().into();
 
     // Get the search term and search for page titles
     let term = matches
@@ -87,7 +87,10 @@ fn wikitrans(
         .expect("failed to search for specified term");
 
     // Interactively select the proper title and get the page
-    // TODO: do not show interactive select if none or one items are found
+    if titles.is_empty() {
+        eprintln!("Nothing found for ({}): {}", search_lang, term);
+        return None;
+    }
     let title = select(titles, "Select term: ")?;
     let page = client.page_from_title(title.clone());
 
@@ -100,21 +103,21 @@ fn wikitrans(
     let langlinks_names = langlinks
         .iter()
         .map(|l| l.title.clone().unwrap_or("".into()))
-        .collect::<Vec<String>>();
+        .collect();
 
     // Filter the target lang list
     let target_langs = langs
         .clone()
         .into_iter()
         .filter(|l| langlinks_tags.contains(&&l.0))
-        .collect::<Vec<_>>();
+        .collect();
 
     // Revert changed client properties
     client.language = original_lang;
 
     // Show an error if no translations are available
     if langlinks.is_empty() {
-        println!("No translations available for: {}", title);
+        eprintln!("No translations available for ({}): {}", search_lang, title);
         return None;
     }
 
