@@ -24,8 +24,9 @@ fn main() {
     let langs = client.get_languages().expect("failed to get languages");
 
     // Run the translation logic, obtain the result and report
-    let result = wikitrans(&matches, &mut client, &langs);
-    println!("{}", result.unwrap_or("".into()));
+    if let Some(result) = wikitrans(&matches, &mut client, &langs) {
+        println!("{}", result);
+    }
 }
 
 /// Build the clap app definition.
@@ -72,8 +73,7 @@ fn wikitrans(
     langs: &Vec<(String, String)>,
 ) -> Option<String> {
     // Select the search language
-    let search_lang = select_lang(&langs, matches.value_of("language"), "Search language: ")
-        .expect("failed to select search language");
+    let search_lang = select_lang(&langs, matches.value_of("language"), "Search language: ")?;
     let original_lang = client.language.clone();
     client.language = search_lang.into();
 
@@ -88,7 +88,7 @@ fn wikitrans(
 
     // Interactively select the proper title and get the page
     // TODO: do not show interactive select if none or one items are found
-    let title = select(titles, "Select term: ").expect("failed to select page title");
+    let title = select(titles, "Select term: ")?;
     let page = client.page_from_title(title.clone());
 
     // Collect all available translations
@@ -124,7 +124,7 @@ fn wikitrans(
         Some(&langlinks_names),
         matches.value_of("translate"),
         "Translate to: ",
-    ).unwrap();
+    )?;
     let target_langlink = langlinks
         .iter()
         .filter(|l| l.lang == target_lang)
