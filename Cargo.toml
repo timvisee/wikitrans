@@ -13,4 +13,4 @@ skim = "0.5"
 wikipedia = "0.3"
 
 [patch.crates-io]
-wikipedia = { path = "/home/timvisee/projects/wikipedia-rs" }
+wikipedia = { git = "https://github.com/seppo0010/wikipedia-rs", rev = "af861067c5af548ae2e93b6c69c77ca1e3c4dbc5" }

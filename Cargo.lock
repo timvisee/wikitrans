@@ -1269,6 +1269,7 @@ dependencies = [
 [[package]]
 name = "wikipedia"
 version = "0.3.1"
+source = "git+https://github.com/seppo0010/wikipedia-rs?rev=af861067c5af548ae2e93b6c69c77ca1e3c4dbc5#af861067c5af548ae2e93b6c69c77ca1e3c4dbc5"
 dependencies = [
  "failure 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "reqwest 0.8.8 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -1282,7 +1283,7 @@ version = "0.1.0"
 dependencies = [
  "clap 2.32.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "skim 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "wikipedia 0.3.1",
+ "wikipedia 0.3.1 (git+https://github.com/seppo0010/wikipedia-rs?rev=af861067c5af548ae2e93b6c69c77ca1e3c4dbc5)",
 ]
 
 [[package]]
@@ -1471,6 +1472,7 @@ dependencies = [
 "checksum version_check 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)" = "7716c242968ee87e5542f8021178248f267f295a5c4803beae8b8b7fd9bc6051"
 "checksum void 1.0.2 (registry+https://github.com/rust-lang/crates.io-index)" = "6a02e4885ed3bc0f2de90ea6dd45ebcbb66dacffe03547fadbb0eeae2770887d"
 "checksum want 0.0.4 (registry+https://github.com/rust-lang/crates.io-index)" = "a05d9d966753fa4b5c8db73fcab5eed4549cfe0e1e4e66911e5564a0085c35d1"
+"checksum wikipedia 0.3.1 (git+https://github.com/seppo0010/wikipedia-rs?rev=af861067c5af548ae2e93b6c69c77ca1e3c4dbc5)" = "<none>"
 "checksum winapi 0.2.8 (registry+https://github.com/rust-lang/crates.io-index)" = "167dc9d6949a9b857f3451275e911c3f44255842c1f7a76f33c55103a909087a"
 "checksum winapi 0.3.5 (registry+https://github.com/rust-lang/crates.io-index)" = "773ef9dcc5f24b7d850d0ff101e542ff24c3b090a9768e03ff889fdef41f00fd"
 "checksum winapi-build 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)" = "2d315eee3b34aca4797b2da6b13ed88266e6d612562a0c46390af8299fc699bc"
