@@ -53,6 +53,10 @@ ARGS:
     <TERM>...    The term to search and translate
 ```
 
+## License
+This project is released under the GNU GPL-3.0 license.
+Check out the [LICENSE](LICENSE) file for more information. 
+
 [cargo]: https://github.com/rust-lang/cargo
 [git]: https://git-scm.com/
 [rustup]: https://rustup.rs/
