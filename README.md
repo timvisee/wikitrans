@@ -5,6 +5,9 @@ Services such as Google Translate usually aren't accurate for translating
 technical terms, this tool provides an alternative by using the Wikipedia
 database with user defined translations.
 
+[![wikitrans usage demo][usage-demo-svg]][usage-demo-asciinema]  
+_No demo visible here? View it on [asciinema][usage-demo-asciinema]._
+
 This tool uses [`skim`][skim] as interactive selection interface.
 
 ## Usage
@@ -66,3 +69,5 @@ Check out the [LICENSE](LICENSE) file for more information.
 [git]: https://git-scm.com/
 [rustup]: https://rustup.rs/
 [skim]: https://github.com/lotabout/skim
+[usage-demo-asciinema]: https://asciinema.org/a/201904
+[usage-demo-svg]: https://rawgit.com/timvisee/wikitrans/master/res/demo.svg
