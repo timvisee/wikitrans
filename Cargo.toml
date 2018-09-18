@@ -1,0 +1,12 @@
+[package]
+name = "wikitrans"
+version = "0.1.0"
+authors = ["timvisee <timvisee@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+skim = "0.5"
+wikipedia = "0.3"
+
+[patch.crates-io]
+wikipedia = { path = "/home/timvisee/projects/wikipedia-rs" }
