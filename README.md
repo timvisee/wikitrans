@@ -70,4 +70,4 @@ Check out the [LICENSE](LICENSE) file for more information.
 [rustup]: https://rustup.rs/
 [skim]: https://github.com/lotabout/skim
 [usage-demo-asciinema]: https://asciinema.org/a/201904
-[usage-demo-svg]: https://rawgit.com/timvisee/wikitrans/master/res/demo.svg
+[usage-demo-svg]: https://cdn.rawgit.com/timvisee/wikitrans/57a356be/res/demo.svg
