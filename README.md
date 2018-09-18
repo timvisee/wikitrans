@@ -36,6 +36,9 @@ git clone https://gitlab.com/timvisee/wikitrans.git
 
 # Compile and install wikitrans
 cargo install --path wikitrans
+
+# To update, use
+cargo install --path wikitrans --force
 ```
 
 ## Help
