@@ -5,6 +5,8 @@ Services such as Google Translate usually aren't accurate for translating
 technical terms, this tool provides an alternative by using the Wikipedia
 database with user defined translations.
 
+This tool uses [`skim`][skim] as interactive selection interface.
+
 ## Usage
 Using this tool is stupidly simple:
 ```bash
@@ -63,3 +65,4 @@ Check out the [LICENSE](LICENSE) file for more information.
 [cargo]: https://github.com/rust-lang/cargo
 [git]: https://git-scm.com/
 [rustup]: https://rustup.rs/
+[skim]: https://github.com/lotabout/skim
