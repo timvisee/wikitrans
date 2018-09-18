@@ -4,10 +4,7 @@ extern crate wikipedia;
 use std::io::Cursor;
 
 use skim::{Skim, SkimOptions};
-use wikipedia::{
-    Wikipedia,
-    http::default::Client,
-};
+use wikipedia::{http::default::Client, Wikipedia};
 
 type WikiClient = Wikipedia<Client>;
 
@@ -33,10 +30,7 @@ fn main() {
         .get_langlinks()
         .expect("failed to fetch langlinks")
         .collect::<Vec<_>>();
-    let langlinks_tags = langlinks
-        .iter()
-        .map(|l| &l.lang)
-        .collect::<Vec<_>>();
+    let langlinks_tags = langlinks.iter().map(|l| &l.lang).collect::<Vec<_>>();
     let langlinks_names = langlinks
         .iter()
         .map(|l| l.title.clone().unwrap_or("".into()))
@@ -56,7 +50,8 @@ fn main() {
     }
 
     // Select the filtered target language and target language link
-    let target_lang = select_lang_with(&target_langs, Some(&langlinks_names), "Translate to: ").unwrap();
+    let target_lang =
+        select_lang_with(&target_langs, Some(&langlinks_names), "Translate to: ").unwrap();
     let target_langlink = langlinks
         .iter()
         .filter(|l| l.lang == target_lang)
@@ -83,7 +78,11 @@ fn select_lang(languages: &Vec<(String, String)>, prompt: &str) -> Option<String
 /// If a `with` list is given, it is zipped together with the list of languages, and shown after
 /// each language item in the interactive selection view.
 /// The tag of the selected language is returned. If nothing was selected, `None` is returned.
-fn select_lang_with(languages: &Vec<(String, String)>, with: Option<&Vec<String>>, prompt: &str) -> Option<String> {
+fn select_lang_with(
+    languages: &Vec<(String, String)>,
+    with: Option<&Vec<String>>,
+    prompt: &str,
+) -> Option<String> {
     // Fetch the list of languages
     let langs = if let Some(with) = with {
         languages
@@ -99,17 +98,14 @@ fn select_lang_with(languages: &Vec<(String, String)>, with: Option<&Vec<String>
     };
 
     // Select the language
-    show_select(langs, prompt)
-        .map(|l| l.split(" - ").next().unwrap().to_owned())
+    show_select(langs, prompt).map(|l| l.split(" - ").next().unwrap().to_owned())
 }
 
 /// Show an interactive selection view for the given list of `items`.
 /// The selected item is returned.  If no item is selected, `None` is returned instead.
 fn show_select(items: Vec<String>, prompt: &str) -> Option<String> {
     // Configure the skim options
-    let options = SkimOptions::default()
-        .prompt(prompt)
-        .height("50%");
+    let options = SkimOptions::default().prompt(prompt).height("50%");
 
     // Build the items string
     let items: String = items.join("\n");
@@ -120,7 +116,8 @@ fn show_select(items: Vec<String>, prompt: &str) -> Option<String> {
         .unwrap_or_else(|| Vec::new());
 
     // Get the first selected, and return
-    selected.iter()
+    selected
+        .iter()
         .next()
         .map(|i| i.get_output_text().to_string())
 }
