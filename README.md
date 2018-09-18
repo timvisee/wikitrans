@@ -2,16 +2,19 @@
 Super simple CLI tool for translating words/terms using Wikipedia.
 
 Services such as Google Translate usually aren't accurate for translating
-technical terms, this tool helps with that.
+technical terms, this tool provides an alternative by using the Wikipedia
+database with user defined translations.
 
 ## Usage
 Using this tool is stupidly simple:
-```
+```bash
 # Translate term with interactive language selection
 wikitrans rust
 
 # Translate term with specified languages
 wikitrans rust --language en --translate nl rust
+# or
+wikitrans rust -l en -t nl rust
 ```
 
 ## Installation
