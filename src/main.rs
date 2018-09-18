@@ -1,28 +1,94 @@
+#[macro_use]
+extern crate clap;
 extern crate skim;
 extern crate wikipedia;
 
 use std::io::Cursor;
 
+use clap::{App, Arg, ArgMatches};
 use skim::{Skim, SkimOptions};
 use wikipedia::{http::default::Client, Wikipedia};
 
+/// The Wikipedia client being used.
 type WikiClient = Wikipedia<Client>;
 
+/// The main application entrypoint.
 fn main() {
-    // The Wikipedia client
-    let mut client = WikiClient::default();
-    client.links_results = "max".into();
+    // Get the clap matches
+    let matches = build_app().get_matches();
 
-    // Fetch all available languages
+    // Build the wiki client
+    let mut client = build_wiki_client();
+
+    // Fetch all available Wikipedia languages
     let langs = client.get_languages().expect("failed to get languages");
 
+    // Run the translation logic, obtain the result and report
+    let result = wikitrans(&matches, &mut client, &langs);
+    println!("{}", result.unwrap_or("".into()));
+}
+
+/// Build the clap app definition.
+fn build_app<'a>() -> App<'a, 'a> {
+    App::new(crate_name!())
+        .version(crate_version!())
+        .author(crate_authors!())
+        .about(crate_description!())
+        .arg(
+            Arg::with_name("TERM")
+                .help("The term to search and translate")
+                .required(true)
+                .multiple(true)
+                .index(1),
+        ).arg(
+            Arg::with_name("language")
+                .long("language")
+                .short("l")
+                .visible_alias("search")
+                .alias("lang")
+                .takes_value(true)
+                .help("The search language tag"),
+        ).arg(
+            Arg::with_name("translate")
+                .long("translate")
+                .short("t")
+                .alias("trans")
+                .takes_value(true)
+                .help("The translate language tag"),
+        )
+}
+
+/// Build a WikiClient.
+fn build_wiki_client() -> WikiClient {
+    let mut client = WikiClient::default();
+    client.links_results = "max".into();
+    client
+}
+
+/// Run the wikitrans logic
+fn wikitrans(
+    matches: &ArgMatches,
+    client: &mut WikiClient,
+    langs: &Vec<(String, String)>,
+) -> Option<String> {
     // Select the search language
-    let search_lang = select_lang(&langs, "Search language: ").unwrap();
+    let search_lang = select_lang(&langs, matches.value_of("language"), "Search language: ")
+        .expect("failed to select search language");
+    let original_lang = client.language.clone();
     client.language = search_lang.into();
 
-    // Search for the term, select the page
-    let titles = client.search("rust").expect("search failed");
-    let title = show_select(titles, "Select term: ").expect("failed to select page title");
+    // Get the search term and search for page titles
+    let term = matches
+        .values_of("TERM")
+        .unwrap()
+        .fold(String::new(), |a, b| a + " " + b);
+    let titles = client
+        .search(&term)
+        .expect("failed to search for specified term");
+
+    // Interactively select the proper title and get the page
+    // TODO: do not show interactive select if none or one items are found
+    let title = select(titles, "Select term: ").expect("failed to select page title");
     let page = client.page_from_title(title.clone());
 
     // Collect all available translations
@@ -43,15 +109,22 @@ fn main() {
         .filter(|l| langlinks_tags.contains(&&l.0))
         .collect::<Vec<_>>();
 
+    // Revert changed client properties
+    client.language = original_lang;
+
     // Show an error if no translations are available
     if langlinks.is_empty() {
         println!("No translations available for: {}", title);
-        return;
+        return None;
     }
 
     // Select the filtered target language and target language link
-    let target_lang =
-        select_lang_with(&target_langs, Some(&langlinks_names), "Translate to: ").unwrap();
+    let target_lang = select_lang_with(
+        &target_langs,
+        Some(&langlinks_names),
+        matches.value_of("translate"),
+        "Translate to: ",
+    ).unwrap();
     let target_langlink = langlinks
         .iter()
         .filter(|l| l.lang == target_lang)
@@ -59,51 +132,64 @@ fn main() {
         .expect("failed to select find langlink");
 
     // Report the result
-    println!("{}", target_langlink.title.clone().unwrap_or("".into()));
+    target_langlink.title.clone()
 }
 
 /// Let the user select a language
 ///
-/// From the given list of `languages` (which may be fetched through `Wikipedia::get_languages()`),
+/// From the given list of `langs` (which may be fetched through `Wikipedia::get_languages()`),
 /// a user selects their preferred language.
+/// A language tag `pref` may be given, to automatically select the language.
 /// The tag of the selected language is returned. If nothing was selected, `None` is returned.
-fn select_lang(languages: &Vec<(String, String)>, prompt: &str) -> Option<String> {
-    select_lang_with(languages, None, prompt)
+fn select_lang(langs: &Vec<(String, String)>, pref: Option<&str>, prompt: &str) -> Option<String> {
+    select_lang_with(langs, None, pref, prompt)
 }
 
 /// Let the user select a language
 ///
-/// From the given list of `languages` (which may be fetched through `Wikipedia::get_languages()`),
+/// From the given list of `langs` (which may be fetched through `Wikipedia::get_languages()`),
 /// a user selects their preferred language.
 /// If a `with` list is given, it is zipped together with the list of languages, and shown after
 /// each language item in the interactive selection view.
+/// A language tag `pref` may be given, to automatically select the language.
 /// The tag of the selected language is returned. If nothing was selected, `None` is returned.
 fn select_lang_with(
-    languages: &Vec<(String, String)>,
+    langs: &Vec<(String, String)>,
     with: Option<&Vec<String>>,
+    pref: Option<&str>,
     prompt: &str,
 ) -> Option<String> {
-    // Fetch the list of languages
-    let langs = if let Some(with) = with {
-        languages
+    // Attempt to select the language based on the preference
+    if let Some(preference) = pref {
+        if let Some((tag, _)) = langs.iter().filter(|l| l.0 == preference).next() {
+            return Some(tag.to_owned());
+        }
+
+        // If it could not be selected automatically show an error
+        eprintln!("Unknown preference language: {}", preference);
+    }
+
+    // Build a list of selectable language items
+    let items = if let Some(with) = with {
+        langs
             .into_iter()
             .zip(with)
-            .map(|(lang, with)| format!("{} - {}: {}", lang.0, lang.1, with))
+            .map(|(lang, with)| format!("{} ({}): {}", lang.0, lang.1, with))
             .collect::<Vec<String>>()
     } else {
-        languages
+        langs
             .into_iter()
-            .map(|lang| format!("{} - {}", lang.0, lang.1))
+            .map(|lang| format!("{} ({})", lang.0, lang.1))
             .collect::<Vec<String>>()
     };
 
-    // Select the language
-    show_select(langs, prompt).map(|l| l.split(" - ").next().unwrap().to_owned())
+    // Show an interactive language selection view
+    select(items, prompt).map(|l| l.split(" (").next().unwrap().to_owned())
 }
 
 /// Show an interactive selection view for the given list of `items`.
 /// The selected item is returned.  If no item is selected, `None` is returned instead.
-fn show_select(items: Vec<String>, prompt: &str) -> Option<String> {
+fn select(items: Vec<String>, prompt: &str) -> Option<String> {
     // Configure the skim options
     let options = SkimOptions::default().prompt(prompt).height("50%");
 

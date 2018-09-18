@@ -3,8 +3,10 @@ name = "wikitrans"
 version = "0.1.0"
 authors = ["timvisee <timvisee@gmail.com>"]
 edition = "2018"
+description = "Translate terms using Wikipedia"
 
 [dependencies]
+clap = "2.32"
 skim = "0.5"
 wikipedia = "0.3"
 
