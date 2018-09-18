@@ -3,7 +3,9 @@ name = "wikitrans"
 version = "0.1.0"
 authors = ["timvisee <timvisee@gmail.com>"]
 edition = "2018"
-description = "Translate terms using Wikipedia"
+description = """
+    Super simple CLI tool for translating words/terms using Wikipedia.
+"""
 
 [dependencies]
 clap = "2.32"
