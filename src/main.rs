@@ -70,12 +70,12 @@ fn build_wiki_client() -> WikiClient {
 fn wikitrans(
     matches: &ArgMatches,
     client: &mut WikiClient,
-    langs: &Vec<(String, String)>,
+    langs: &[(String, String)],
 ) -> Option<String> {
     // Select the search language
     let search_lang = select_lang(&langs, matches.value_of("language"), "Search language: ")?;
     let original_lang = client.language.clone();
-    client.language = search_lang.clone().into();
+    client.language = search_lang.clone();
 
     // Get the search term and search for page titles
     let term = matches
@@ -91,7 +91,7 @@ fn wikitrans(
         eprintln!("Nothing found for ({}): {}", search_lang, term);
         return None;
     }
-    let title = select(titles, "Select term: ")?;
+    let title = select(&titles, "Select term: ")?;
     let page = client.page_from_title(title.clone());
 
     // Collect all available translations
@@ -102,14 +102,15 @@ fn wikitrans(
     let langlinks_tags = langlinks.iter().map(|l| &l.lang).collect::<Vec<_>>();
     let langlinks_names = langlinks
         .iter()
-        .map(|l| l.title.clone().unwrap_or("".into()))
+        .map(|l| l.title.clone().unwrap_or_else(|| "".into()))
         .collect();
 
     // Filter the target lang list
-    let target_langs = langs
+    let target_langs: Vec<(String, String)> = langs
         .clone()
         .into_iter()
         .filter(|l| langlinks_tags.contains(&&l.0))
+        .cloned()
         .collect();
 
     // Revert changed client properties
@@ -130,8 +131,7 @@ fn wikitrans(
     )?;
     let target_langlink = langlinks
         .iter()
-        .filter(|l| l.lang == target_lang)
-        .next()
+        .find(|l| l.lang == target_lang)
         .expect("failed to select find langlink");
 
     // Report the result
@@ -144,7 +144,7 @@ fn wikitrans(
 /// a user selects their preferred language.
 /// A language tag `pref` may be given, to automatically select the language.
 /// The tag of the selected language is returned. If nothing was selected, `None` is returned.
-fn select_lang(langs: &Vec<(String, String)>, pref: Option<&str>, prompt: &str) -> Option<String> {
+fn select_lang(langs: &[(String, String)], pref: Option<&str>, prompt: &str) -> Option<String> {
     select_lang_with(langs, None, pref, prompt)
 }
 
@@ -157,14 +157,14 @@ fn select_lang(langs: &Vec<(String, String)>, pref: Option<&str>, prompt: &str) 
 /// A language tag `pref` may be given, to automatically select the language.
 /// The tag of the selected language is returned. If nothing was selected, `None` is returned.
 fn select_lang_with(
-    langs: &Vec<(String, String)>,
+    langs: &[(String, String)],
     with: Option<&Vec<String>>,
     pref: Option<&str>,
     prompt: &str,
 ) -> Option<String> {
     // Attempt to select the language based on the preference
     if let Some(preference) = pref {
-        if let Some((tag, _)) = langs.iter().filter(|l| l.0 == preference).next() {
+        if let Some((tag, _)) = langs.iter().find(|l| l.0 == preference) {
             return Some(tag.to_owned());
         }
 
@@ -187,12 +187,12 @@ fn select_lang_with(
     };
 
     // Show an interactive language selection view
-    select(items, prompt).map(|l| l.split(" (").next().unwrap().to_owned())
+    select(&items, prompt).map(|l| l.split(" (").next().unwrap().to_owned())
 }
 
 /// Show an interactive selection view for the given list of `items`.
 /// The selected item is returned.  If no item is selected, `None` is returned instead.
-fn select(items: Vec<String>, prompt: &str) -> Option<String> {
+fn select(items: &[String], prompt: &str) -> Option<String> {
     // Configure the skim options
     let options = SkimOptions::default().prompt(prompt).height("50%");
 
@@ -202,7 +202,7 @@ fn select(items: Vec<String>, prompt: &str) -> Option<String> {
     // Show the skim select view
     let selected = Skim::run_with(&options, Some(Box::new(Cursor::new(items))))
         .map(|out| out.selected_items)
-        .unwrap_or_else(|| Vec::new());
+        .unwrap_or_else(Vec::new);
 
     // Get the first selected, and return
     selected
