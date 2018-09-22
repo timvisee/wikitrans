@@ -29,6 +29,8 @@ variables:
     - cargo test --all --verbose
 rust-stable:
   <<: *check-base
+  # Allow failure on stable, until 2018 edition is stabilized
+  allow_failure: true
 rust-beta:
   <<: *check-base
   variables:
@@ -41,6 +43,8 @@ rust-nightly:
 # Build using Rust stable
 build:
   stage: build
+  variables:
+    RUST_VERSION: beta
   script:
     - cargo build --release --all --verbose
 
