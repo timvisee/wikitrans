@@ -11,7 +11,7 @@ variables:
 # Install the proper Rust compiler version
 before_script:
   - apt-get update -yqq
-  - apt-get install -yqq --no-install-recommends build-essential libssl-dev
+  - apt-get install -yqq --no-install-recommends build-essential pkg-config libssl-dev
   - |
     rustup install $RUST_VERSION
     rustup default $RUST_VERSION
