@@ -1,3 +1,15 @@
+[![Build status on GitLab CI][gitlab-ci-master-badge]][gitlab-ci-link]
+[![Newest release on crates.io][crate-version-badge]][crate-link]
+[![Number of downloads on crates.io][crate-download-badge]][crate-link]
+[![Project license][crate-license-badge]](LICENSE)
+
+[crate-link]: https://crates.io/crates/wikitrans
+[crate-download-badge]: https://img.shields.io/crates/d/wikitrans.svg
+[crate-version-badge]: https://img.shields.io/crates/v/wikitrans.svg
+[crate-license-badge]: https://img.shields.io/crates/l/wikitrans.svg
+[gitlab-ci-link]: https://gitlab.com/timvisee/wikitrans/commits/master
+[gitlab-ci-master-badge]: https://gitlab.com/timvisee/wikitrans/badges/master/pipeline.svg
+
 # wikitrans
 Super simple CLI tool for translating words/terms using Wikipedia.
 
