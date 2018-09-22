@@ -2,10 +2,22 @@
 name = "wikitrans"
 version = "0.1.0"
 authors = ["timvisee <timvisee@gmail.com>"]
+license = "GPL-3.0"
+readme = "README.md"
+homepage = "https://gitlab.com/timvisee/wikitrans"
+repository = "https://gitlab.com/timvisee/wikitrans"
 edition = "2018"
 description = """
     Super simple CLI tool for translating words/terms using Wikipedia.
 """
+keywords = [
+    "wiki",
+    "translate",
+    "wikipedia",
+]
+categories = [
+    "command-line-utilities",
+]
 
 [dependencies]
 clap = "2.32"
