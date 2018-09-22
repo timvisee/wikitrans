@@ -113,8 +113,8 @@ fn wikitrans(
         .cloned()
         .collect();
 
-    // Revert changed client properties
-    client.language = original_lang;
+    // // Revert changed client properties
+    // client.language = original_lang;
 
     // Show an error if no translations are available
     if langlinks.is_empty() {

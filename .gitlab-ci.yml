@@ -5,6 +5,7 @@ stages:
   - build
   - release
 
+# Variable defaults
 variables:
   RUST_VERSION: stable
 
@@ -19,10 +20,6 @@ before_script:
     rustc --version
     cargo --version
 
-# Variable defaults
-variables:
-  RUST_VERSION: stable
-
 # Check on stable, beta and nightly 
 .check-base: &check-base
   stage: check
@@ -31,8 +28,6 @@ variables:
     - cargo test --all --verbose
 rust-stable:
   <<: *check-base
-  # Allow failure on stable, until 2018 edition is stabilized
-  allow_failure: true
 rust-beta:
   <<: *check-base
   variables:
@@ -45,8 +40,6 @@ rust-nightly:
 # Build using Rust stable
 build:
   stage: build
-  variables:
-    RUST_VERSION: beta
   script:
     - cargo build --release --all --verbose
 
