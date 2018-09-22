@@ -1,0 +1,15 @@
+image: rust
+
+stages:
+  - test
+
+before_script:
+  - rustup default stable
+  - rustup update
+  - rustc --version && cargo --version
+
+# Build and test the project
+build:
+  stage: test
+  script:
+    - cargo build --all --verbose
