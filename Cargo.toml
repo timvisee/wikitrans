@@ -6,9 +6,7 @@ license = "GPL-3.0"
 readme = "README.md"
 homepage = "https://gitlab.com/timvisee/wikitrans"
 repository = "https://gitlab.com/timvisee/wikitrans"
-description = """
-    Super simple CLI tool for translating words/terms using Wikipedia.
-"""
+description = "Super simple CLI tool for translating words/terms using Wikipedia."
 keywords = [
     "wiki",
     "translate",
