@@ -19,4 +19,4 @@ categories = [
 [dependencies]
 clap = "2.32"
 skim = "0.5"
-wikipedia = "0.3.2"
+wikipedia = "0.3.3"

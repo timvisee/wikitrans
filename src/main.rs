@@ -86,6 +86,9 @@ fn wikitrans(
         .search(&term)
         .expect("failed to search for specified term");
 
+    // Revert changed client properties
+    client.language = original_lang;
+
     // Interactively select the proper title and get the page
     if titles.is_empty() {
         eprintln!("Nothing found for ({}): {}", search_lang, term);
@@ -112,9 +115,6 @@ fn wikitrans(
         .filter(|l| langlinks_tags.contains(&&l.0))
         .cloned()
         .collect();
-
-    // // Revert changed client properties
-    // client.language = original_lang;
 
     // Show an error if no translations are available
     if langlinks.is_empty() {
