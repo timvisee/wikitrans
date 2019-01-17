@@ -38,7 +38,7 @@ wikitrans rust -l en -t nl rust
 To install this tool, clone the repository and install it with `cargo`.
 
 First make sure you meet the following build requirements:
-- Rust `v1.30` or higher (with [`cargo`][cargo], install using [`rustup`][rustup])
+- Rust `v1.31` or higher (with [`cargo`][cargo], install using [`rustup`][rustup])
 - [`git`][git]
 
 Then use the following commands:

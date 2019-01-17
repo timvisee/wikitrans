@@ -15,6 +15,7 @@ keywords = [
 categories = [
     "command-line-utilities",
 ]
+edition = "2018"
 
 [dependencies]
 clap = "2.32"
