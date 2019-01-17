@@ -41,7 +41,8 @@ fn build_app<'a>() -> App<'a, 'a> {
                 .required(true)
                 .multiple(true)
                 .index(1),
-        ).arg(
+        )
+        .arg(
             Arg::with_name("language")
                 .long("language")
                 .short("l")
@@ -49,7 +50,8 @@ fn build_app<'a>() -> App<'a, 'a> {
                 .alias("lang")
                 .takes_value(true)
                 .help("The search language tag"),
-        ).arg(
+        )
+        .arg(
             Arg::with_name("translate")
                 .long("translate")
                 .short("t")
