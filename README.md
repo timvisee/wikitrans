@@ -57,7 +57,7 @@ cargo install --path wikitrans --force
 ```
 $ wikitrans --help
 
-wikitrans 0.1.1
+wikitrans 0.1.2
 timvisee <timvisee@gmail.com>
 Translate terms using Wikipedia
 
