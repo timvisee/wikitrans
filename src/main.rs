@@ -196,7 +196,9 @@ fn select_lang_with(
 /// The selected item is returned.  If no item is selected, `None` is returned instead.
 fn select(items: &[String], prompt: &str) -> Option<String> {
     // Configure the skim options
-    let options = SkimOptions::default().prompt(prompt).height("50%");
+    let mut options = SkimOptions::default();
+    options.prompt = Some(prompt);
+    options.height = Some("50%");
 
     // Build the items string
     let items: String = items.join("\n");

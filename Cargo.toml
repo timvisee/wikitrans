@@ -19,5 +19,5 @@ edition = "2018"
 
 [dependencies]
 clap = "2.32"
-skim = "0.5"
+skim = "0.6"
 wikipedia = "0.3.3"
